@@ -3,6 +3,7 @@ package com.hazse.mcp.boardgame.app.stdio.provider;
 import com.hazse.mcp.boardgame.client.core.BoardGame;
 import com.hazse.mcp.boardgame.client.core.BoardGameInformationClient;
 import com.hazse.mcp.boardgame.client.core.BoardGameSearchResult;
+import com.hazse.mcp.boardgame.client.core.BoardGameSearchResultList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springaicommunity.mcp.annotation.McpTool;
@@ -20,20 +21,22 @@ public class BoardGameToolProvider {
 
     @McpTool(
             name = "searchGames",
-            description = "Search for a list of boardgames by the provided full or partial name"
+            description = "Search for a list of boardgames by the provided full or partial name",
+            generateOutputSchema = true
     )
-    public String getBoardGamesWithName(
+    public BoardGameSearchResultList getBoardGamesWithName(
             @McpToolParam(description =  "The full or partial name of the games to look for", required = true)
             String name
     ) {
-        return bggClient.searchGamesByName(name).stream()
-                .map(this::convertToText)
-                .collect(Collectors.joining("\n"));
+        return BoardGameSearchResultList.builder()
+                .games(bggClient.searchGamesByName(name))
+                .build();
     }
 
     @McpTool(
-            name = "gameDetails",
-            description = "Provides details about a game by its id"
+            name = "getGameDetails",
+            description = "Provides details about a game by its id",
+            generateOutputSchema = true
     )
     public BoardGame getBoardGameDetails(
             @McpToolParam(description =  "The id of the game", required = true)

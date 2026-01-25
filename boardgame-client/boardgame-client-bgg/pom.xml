@@ -9,7 +9,6 @@
     </parent>
 
     <artifactId>boardgame-client-bgg</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
 
     <name>boardgame-client-bgg</name>
     <description>BoardGameGeek (BGG) specific implementation for fetching game information.</description>
