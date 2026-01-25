@@ -22,8 +22,8 @@ public class BoardGameResourceProvider {
 
     @McpResource(
             uri = BOARD_GAME_DETAILS_URI + "{boardGameId}",
-            name = "gameDetails",
-            description = "Provides detailed information about boardgames based on their id",
+            name = "boardGameDetailsResource",
+            description = "Provides detailed information about board games based on their id",
             mimeType = "application/json"
     )
     public McpSchema.ReadResourceResult getBoardGameDetails(String boardGameId) {

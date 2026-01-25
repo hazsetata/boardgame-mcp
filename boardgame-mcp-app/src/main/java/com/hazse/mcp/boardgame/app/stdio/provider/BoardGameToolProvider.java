@@ -2,7 +2,6 @@ package com.hazse.mcp.boardgame.app.stdio.provider;
 
 import com.hazse.mcp.boardgame.client.core.BoardGame;
 import com.hazse.mcp.boardgame.client.core.BoardGameInformationClient;
-import com.hazse.mcp.boardgame.client.core.BoardGameSearchResult;
 import com.hazse.mcp.boardgame.client.core.BoardGameSearchResultList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +10,6 @@ import org.springaicommunity.mcp.annotation.McpToolParam;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 @RequiredArgsConstructor
@@ -20,12 +18,12 @@ public class BoardGameToolProvider {
     private final BoardGameInformationClient bggClient;
 
     @McpTool(
-            name = "searchGames",
-            description = "Search for a list of boardgames by the provided full or partial name",
+            name = "searchBoardGames",
+            description = "Search for a list of board games by the provided full or partial name",
             generateOutputSchema = true
     )
     public BoardGameSearchResultList getBoardGamesWithName(
-            @McpToolParam(description =  "The full or partial name of the games to look for", required = true)
+            @McpToolParam(description =  "The full or partial name of the board games to look for", required = true)
             String name
     ) {
         return BoardGameSearchResultList.builder()
@@ -34,12 +32,12 @@ public class BoardGameToolProvider {
     }
 
     @McpTool(
-            name = "getGameDetails",
-            description = "Provides details about a game by its id",
+            name = "getBoardGameDetails",
+            description = "Provides details about a board game by its id",
             generateOutputSchema = true
     )
     public BoardGame getBoardGameDetails(
-            @McpToolParam(description =  "The id of the game", required = true)
+            @McpToolParam(description =  "The id of the board game", required = true)
             String id
     ) {
         int intBoardGameId = Integer.parseInt(id);
@@ -52,20 +50,5 @@ public class BoardGameToolProvider {
                 .stream()
                 .findFirst()
                 .orElse(null);
-    }
-
-
-    private String convertToText(BoardGameSearchResult bggGame) {
-        return String.format(""" 
-                Name: %s
-                ID: %d
-                Publication year: %s
-                Url: https://boardgamegeek.com/boardgame/%d
-                """,
-                bggGame.getName(),
-                bggGame.getId(),
-                bggGame.getPublicationYear() == null ? "Unknown" : String.valueOf(bggGame.getPublicationYear()),
-                bggGame.getId()
-        );
     }
 }

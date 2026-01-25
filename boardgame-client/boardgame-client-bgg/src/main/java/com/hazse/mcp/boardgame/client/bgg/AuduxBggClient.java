@@ -4,13 +4,16 @@ import com.hazse.mcp.boardgame.client.core.BoardGame;
 import com.hazse.mcp.boardgame.client.core.BoardGameInformationClient;
 import com.hazse.mcp.boardgame.client.core.BoardGameSearchResult;
 import com.hazse.mcp.boardgame.client.core.BoardGameType;
+import lombok.extern.slf4j.Slf4j;
 import org.audux.bgg.common.ThingType;
 import org.audux.bgg.response.*;
 
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
+@Slf4j
 public class AuduxBggClient implements BoardGameInformationClient {
     protected static final Set<ThingType> ALLOWED_THING_TYPES_SET = Set.of(
             ThingType.BOARD_GAME,
@@ -19,13 +22,22 @@ public class AuduxBggClient implements BoardGameInformationClient {
     protected static final ThingType[] ALLOWED_THING_TYPES = ALLOWED_THING_TYPES_SET.toArray(new ThingType[0]);
     public static final String BGG_GAME_URL = "https://boardgamegeek.com/boardgame/%d";
 
+    public AuduxBggClient(String authToken) {
+        org.audux.bgg.BggClient.configure(config -> {
+            config.setAuthToken(authToken);
+            return null;
+        });
+    }
+
+    @SuppressWarnings("java:S2142")
     @Override
     public List<BoardGameSearchResult> searchGamesByName(String name) {
         try {
-            Response<SearchResults> searchResponse = org.audux.bgg.BggClient
-                    .search(name, new ThingType[]{ThingType.BOARD_GAME})
-                    .callAsync()
-                    .get();
+            Future<Response<SearchResults>> searchFuture = org.audux.bgg.BggClient
+                    .search(name, new ThingType[]{ThingType.BOARD_GAME}, false)
+                    .callAsync();
+            Response<SearchResults> searchResponse = searchFuture.get();
+
             if (searchResponse.isSuccess()) {
                 SearchResults searchResults = searchResponse.getData();
 
@@ -36,13 +48,15 @@ public class AuduxBggClient implements BoardGameInformationClient {
                         .toList();
             }
         }
-        catch (InterruptedException | ExecutionException e) {
+        catch (Exception e) {
             // We do nothing with these, just return an empty list below
+            log.error("Error searching for games: '{}'", name, e);
         }
 
         return List.of();
     }
 
+    @SuppressWarnings("java:S2142")
     @Override
     public List<BoardGame> getGameDetailsByIds(Set<Integer> ids) {
         try {
@@ -62,8 +76,9 @@ public class AuduxBggClient implements BoardGameInformationClient {
                         .toList();
             }
         }
-        catch (InterruptedException | ExecutionException e) {
+        catch (Exception e) {
             // We do nothing with these, just return an empty list below
+            log.error("Error fetching game details for: {}", ids, e);
         }
 
         return List.of();
