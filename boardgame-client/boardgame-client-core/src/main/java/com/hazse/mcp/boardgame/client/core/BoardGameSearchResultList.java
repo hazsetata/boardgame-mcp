@@ -4,12 +4,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.List;
+
 @Data
 @Builder
 @Jacksonized
-public class BoardGameSearchResult {
-    private int id;
-    private String name;
-    private String url;
-    private Integer publicationYear;
+public class BoardGameSearchResultList {
+    private List<BoardGameSearchResult> games;
 }

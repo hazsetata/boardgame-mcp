@@ -9,7 +9,6 @@
     </parent>
 
     <artifactId>boardgame-client-core</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
 
     <name>boardgame-client-core</name>
     <description>Core (generic) classes that define a client interface for fetching game information.</description>

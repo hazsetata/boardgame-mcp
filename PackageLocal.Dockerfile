@@ -3,28 +3,10 @@ FROM eclipse-temurin:21-jdk-alpine AS builder
 
 WORKDIR /app
 
-# Copy Maven wrapper and parent POM
-COPY .mvn/ .mvn/
-COPY mvnw pom.xml ./
-
-# Copy all other POMs
-COPY boardgame-client/pom.xml boardgame-client/pom.xml
-COPY boardgame-client/boardgame-client-core/pom.xml boardgame-client/boardgame-client-core/pom.xml
-COPY boardgame-client/boardgame-client-bgg/pom.xml boardgame-client/boardgame-client-bgg/pom.xml
-COPY boardgame-mcp-app/pom.xml boardgame-mcp-app/pom.xml
-
-# Download dependencies (this layer will be cached unless any pom.xml above changes)
-RUN chmod +x ./mvnw && ./mvnw dependency:go-offline -B
-
-# Copy all source code for all modules
-COPY boardgame-client/ boardgame-client/
-COPY boardgame-mcp-app/ boardgame-mcp-app/
-
-# Build the entire multi-module project
-RUN ./mvnw clean package -DskipTests -Dspring-boot.build-image.skip=true
+COPY boardgame-mcp-app/target/*.jar application.jar
 
 # Extract layers from the Spring Boot JAR in the boardgame-mcp-app module
-RUN java -Djarmode=layertools -jar boardgame-mcp-app/target/*.jar extract --destination extracted
+RUN java -Djarmode=layertools -jar application.jar extract --destination extracted
 
 # Stage 2: Runtime stage
 FROM eclipse-temurin:21-jre-alpine AS runtime
