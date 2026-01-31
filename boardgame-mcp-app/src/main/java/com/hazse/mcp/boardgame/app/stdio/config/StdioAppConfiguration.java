@@ -2,6 +2,7 @@ package com.hazse.mcp.boardgame.app.stdio.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hazse.mcp.boardgame.app.stdio.config.props.StdioAppConfigurationProperties;
+import com.hazse.mcp.boardgame.app.stdio.provider.BoardGamePromptProvider;
 import com.hazse.mcp.boardgame.app.stdio.provider.BoardGameResourceProvider;
 import com.hazse.mcp.boardgame.app.stdio.provider.BoardGameToolProvider;
 import com.hazse.mcp.boardgame.client.bgg.AuduxBggClient;
@@ -26,5 +27,10 @@ public class StdioAppConfiguration {
     @Bean
     BoardGameResourceProvider boardGameResourceProvider(BoardGameInformationClient bggClient, ObjectMapper objectMapper) {
         return new BoardGameResourceProvider(bggClient, objectMapper);
+    }
+
+    @Bean
+    BoardGamePromptProvider boardGamePromptProvider() {
+        return new BoardGamePromptProvider();
     }
 }
