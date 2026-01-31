@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Board game Cover Display</title>
+</head>
+<body>
+<main class="main">
+    <p class="notice">Watch activity in the DevTools console!</p>
+
+    <div class="powered-by">
+        <img src="/src/powered_by_bgg.png" alt="Powered by BoardGameGeek">
+    </div>
+
+    <div class="cover-image" id="cover-image"></div>
+
+    <div class="action" id="greeting-action">
+        <input type="text" id="greeting-text">
+        <button id="send-greeting">Send Greeting</button>
+    </div>
+
+    <div class="greeting" id="greeting-response">
+    </div>
+</main>
+<script type="module" src="/src/boardgame-display.ts"></script>
+</body>
+</html>

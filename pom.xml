@@ -16,6 +16,12 @@
 
     <name>boardgame-mcp</name>
     <description>MCP server to search for boardgames.</description>
+    <url>https://github.com/hazsetata/boardgame-mcp</url>
+    <scm>
+        <url>https://github.com/hazsetata/boardgame-mcp</url>
+        <connection>scm:git:https://github.com/hazsetata/boardgame-mcp.git</connection>
+        <developerConnection>scm:git:https://github.com/hazsetata/boardgame-mcp.git</developerConnection>
+    </scm>
 
     <licenses>
         <license>

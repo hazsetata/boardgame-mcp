@@ -1,0 +1,5 @@
+.idea/
+.junie/
+docs/
+logs/
+docker.env

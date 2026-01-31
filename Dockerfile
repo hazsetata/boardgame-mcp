@@ -1,4 +1,15 @@
-# Stage 1: Build stage using Maven
+# Stage 1: Build stage for web parts using NPM
+FROM node:25.6 AS html
+WORKDIR /site
+
+# Copy the
+COPY boardgame-display/ ./
+
+# Build with npm
+RUN --mount=type=cache,target=/root/.npm npm install
+RUN npm run build
+
+# Stage 2: Build stage for Java parts using Maven
 FROM eclipse-temurin:21-jdk-alpine AS builder
 
 WORKDIR /app
@@ -20,15 +31,16 @@ RUN --mount=type=cache,target=/root/.m2 \
 # Copy all source code for all modules
 COPY boardgame-client/ boardgame-client/
 COPY boardgame-mcp-app/ boardgame-mcp-app/
-
+COPY --from=html site/dist/boardgame-display.html boardgame-mcp-app/src/main/resources/content/boardgame-display.html
 # Build the entire multi-module project
 RUN --mount=type=cache,target=/root/.m2 \
     ./mvnw clean package -DskipTests -Dspring-boot.build-image.skip=true
 
 # Extract layers from the Spring Boot JAR in the boardgame-mcp-app module
-RUN java -Djarmode=layertools -jar boardgame-mcp-app/target/*.jar extract --destination extracted
+RUN java -Djarmode=tools -jar boardgame-mcp-app/target/*.jar extract --layers --launcher --destination extracted
 
-# Stage 2: Runtime stage
+# Stage 3: Runtime stage (using "latest" tag as that is the only free tag available from Chainguard)
+#          Could use dhi.io/eclipse-temurin:21-alpine3.23 instead, but that requires Docker account login (free)
 FROM cgr.dev/chainguard/jre:latest AS runtime
 
 # Set working directory
@@ -40,6 +52,9 @@ COPY --from=builder app/extracted/dependencies/ ./
 COPY --from=builder app/extracted/spring-boot-loader/ ./
 COPY --from=builder app/extracted/snapshot-dependencies/ ./
 COPY --from=builder app/extracted/application/ ./
+
+# Copy SBOM to the application root for easier descovery for scanners
+COPY --from=builder app/extracted/application/META-INF/sbom/application.cdx.json ./sbom.json
 
 # Set JVM options for containerized environment
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 -XX:+UseContainerSupport -XX:+ExitOnOutOfMemoryError"

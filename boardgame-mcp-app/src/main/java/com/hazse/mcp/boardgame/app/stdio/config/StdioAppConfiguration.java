@@ -1,10 +1,14 @@
 package com.hazse.mcp.boardgame.app.stdio.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hazse.mcp.boardgame.app.stdio.meta.AppsUiMetadataTransformer;
+import com.hazse.mcp.boardgame.app.stdio.meta.ToolSpecsPostProcessor;
 import com.hazse.mcp.boardgame.app.stdio.config.props.StdioAppConfigurationProperties;
+import com.hazse.mcp.boardgame.app.stdio.provider.BoardGameAppsExtensionProvider;
 import com.hazse.mcp.boardgame.app.stdio.provider.BoardGamePromptProvider;
 import com.hazse.mcp.boardgame.app.stdio.provider.BoardGameResourceProvider;
 import com.hazse.mcp.boardgame.app.stdio.provider.BoardGameToolProvider;
+import com.hazse.mcp.boardgame.app.stdio.utils.ImageDownloader;
 import com.hazse.mcp.boardgame.client.bgg.AuduxBggClient;
 import com.hazse.mcp.boardgame.client.core.BoardGameInformationClient;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -32,5 +36,18 @@ public class StdioAppConfiguration {
     @Bean
     BoardGamePromptProvider boardGamePromptProvider() {
         return new BoardGamePromptProvider();
+    }
+
+    @Bean
+    BoardGameAppsExtensionProvider boardGameAppsExtensionProvider(
+            BoardGameInformationClient bggClient,
+            ImageDownloader imageDownloader
+    ) {
+        return new BoardGameAppsExtensionProvider(bggClient, imageDownloader);
+    }
+
+    @Bean
+    ToolSpecsPostProcessor toolSpecsPostProcessor() {
+        return new ToolSpecsPostProcessor(new AppsUiMetadataTransformer());
     }
 }
