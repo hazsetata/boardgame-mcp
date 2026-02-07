@@ -33,8 +33,10 @@ function setupCoverImage(coverImageElement : HTMLElement, result: CallToolResult
 
 const mainEl = document.querySelector(".main") as HTMLElement;
 const coverImageEl = document.getElementById("cover-image")!;
-const ratingText = document.getElementById("rating-text") as HTMLInputElement;
-const sendRatingBtn = document.getElementById("send-rating")!;
+const greetingActionEl = document.getElementById("greeting-action")!;
+const greetingResponseEl = document.getElementById("greeting-response")!;
+const greetingText = document.getElementById("greeting-text") as HTMLInputElement;
+const sendGreetingBtn = document.getElementById("send-greeting")!;
 
 function handleHostContextChanged(ctx: McpUiHostContext) {
     if (ctx.theme) {
@@ -54,10 +56,8 @@ function handleHostContextChanged(ctx: McpUiHostContext) {
     }
 }
 
-
 // 1. Create app instance
 const app = new App({ name: "Board Game Cover Display App", version: "1.0.0" });
-
 
 // 2. Register handlers BEFORE connecting
 app.onteardown = async () => {
@@ -82,9 +82,21 @@ app.onerror = console.error;
 
 app.onhostcontextchanged = handleHostContextChanged;
 
-sendRatingBtn.addEventListener("click", async () => {
-    console.info("Sending rating to Host:", ratingText.value);
-    await app.sendLog({ level: "info", data: ratingText.value });
+sendGreetingBtn.addEventListener("click", async () => {
+    console.info("Sending greeting to Host:", greetingText.value);
+    await app.sendLog({ level: "info", data: greetingText.value });
+    const result = await app.callServerTool({ name: "greetBoardGamers", arguments: { gamerGroup: greetingText.value } });
+    console.info("greeting result:", result);
+
+    const greetingMessage = result.structuredContent?.greetingMessage as string | undefined;
+
+    if (greetingMessage) {
+        const greetingHeading = document.createElement('h3')
+        greetingHeading.innerText = greetingMessage;
+        greetingResponseEl.appendChild(greetingHeading);
+
+        greetingActionEl.style.display = 'none';
+    }
 });
 
 // 3. Connect to host

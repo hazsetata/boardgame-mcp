@@ -70,6 +70,20 @@ public class BoardGameAppsExtensionProvider {
         return wrapUiHtmlcontent(UI_BOARD_GAME_DISPLAY, displayHtml);
     }
 
+    public record GamerGreeting(String greetingMessage) {}
+
+    @McpTool(
+            name = "greetBoardGamers",
+            description = "Sends a greeting message for board gamers",
+            generateOutputSchema = true
+    )
+    public GamerGreeting sendBoardGamerGreeting(
+            @McpToolParam(description =  "The group to send the message to", required = true)
+            String gamerGroup
+    ) {
+        return new GamerGreeting("Hello board gamers @ %s!".formatted(gamerGroup));
+    }
+
     private McpSchema.ReadResourceResult wrapUiHtmlcontent(String uri, String content) {
         return new McpSchema.ReadResourceResult(List.of(
                 new McpSchema.TextResourceContents(
