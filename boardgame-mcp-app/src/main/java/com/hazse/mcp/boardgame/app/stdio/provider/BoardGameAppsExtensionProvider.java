@@ -6,7 +6,6 @@ import com.hazse.mcp.boardgame.app.stdio.utils.ImageDownloaderException;
 import com.hazse.mcp.boardgame.app.stdio.utils.ResourceUtils;
 import com.hazse.mcp.boardgame.client.core.BoardGame;
 import com.hazse.mcp.boardgame.client.core.BoardGameInformationClient;
-import com.hazse.mcp.boardgame.client.core.BoardGameSearchResult;
 import io.modelcontextprotocol.spec.McpSchema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,35 +23,33 @@ public class BoardGameAppsExtensionProvider {
 
     private final BoardGameInformationClient bggClient;
     private final ImageDownloader imageDownloader;
+
     @McpTool(
             name = "getBoardGameCoverImage",
-            description = "Gets the cover image of the first board game that matches the provided name"
+            description = "Gets the cover image of a board game by its id"
     )
     @McpToolMeta(
             metadata = "ext_apps_ui=" + UI_BOARD_GAME_DISPLAY
     )
-    public McpSchema.CallToolResult getBoardGameCoverWithName(
-            @McpToolParam(description =  "The full or partial name of the board games to look for", required = true)
-            String name
+    public McpSchema.CallToolResult getBoardGameCover(
+            @McpToolParam(description = "The id of the board game", required = true)
+            String id
     ) {
-        List<BoardGameSearchResult> searchResults = bggClient.searchGamesByName(name);
+        int intBoardGameId = Integer.parseInt(id);
+        List<BoardGame> gameDetailsByIds = bggClient.getGameDetailsByIds(Set.of(intBoardGameId));
 
-        if (!searchResults.isEmpty()) {
-            List<BoardGame> boardGames = bggClient.getGameDetailsByIds(Set.of(searchResults.getFirst().getId()));
-
-            if (!boardGames.isEmpty() && boardGames.getFirst().getImageUrl() != null) {
-                try {
-                    String coverImage = imageDownloader.downloadAsBase64Png(boardGames.getFirst().getImageUrl());
-                    if (coverImage != null) {
-                        return McpSchema.CallToolResult.builder()
-                                .addContent(new McpSchema.ImageContent(null, coverImage, "image/png"))
-                                .isError(false)
-                                .build();
-                    }
+        if (!gameDetailsByIds.isEmpty() && gameDetailsByIds.getFirst().getImageUrl() != null) {
+            try {
+                String coverImage = imageDownloader.downloadAsBase64Png(gameDetailsByIds.getFirst().getImageUrl());
+                if (coverImage != null) {
+                    return McpSchema.CallToolResult.builder()
+                            .addContent(new McpSchema.ImageContent(null, coverImage, "image/png"))
+                            .isError(false)
+                            .build();
                 }
-                catch (ImageDownloaderException e) {
-                    log.error("Error downloading cover image: {}", e.getMessage(), e);
-                }
+            }
+            catch (ImageDownloaderException e) {
+                log.error("Error downloading cover image: {}", e.getMessage(), e);
             }
         }
 
