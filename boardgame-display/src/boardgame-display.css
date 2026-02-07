@@ -72,8 +72,6 @@
     }
 }
 
-/* Server time fills remaining width for consistent E2E screenshot masking */
-#server-time {
-    flex: 1;
-    min-width: 0;
+.greeting {
+    text-align: center;
 }

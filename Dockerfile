@@ -1,4 +1,14 @@
 # Stage 1: Build stage using Maven
+FROM node:25.6 AS html
+WORKDIR /site
+
+# Copy the
+COPY boardgame-display/ ./
+
+# Build with npm
+RUN --mount=type=cache,target=/root/.npm npm install
+RUN npm run build
+
 FROM eclipse-temurin:21-jdk-alpine AS builder
 
 WORKDIR /app
@@ -20,7 +30,7 @@ RUN --mount=type=cache,target=/root/.m2 \
 # Copy all source code for all modules
 COPY boardgame-client/ boardgame-client/
 COPY boardgame-mcp-app/ boardgame-mcp-app/
-
+COPY --from=html site/dist/boardgame-display.html boardgame-mcp-app/src/main/resources/content/boardgame-display.html
 # Build the entire multi-module project
 RUN --mount=type=cache,target=/root/.m2 \
     ./mvnw clean package -DskipTests -Dspring-boot.build-image.skip=true
