@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface McpToolMeta {
-    String metadata() default "";
+    String[] metadata() default {};
 }

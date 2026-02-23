@@ -63,8 +63,8 @@ public class ToolSpecsPostProcessor implements BeanPostProcessor {
                 McpToolMeta toolMetaAnnotation = getMcpToolMetaAnnotation(toolMethod);
 
                 if (toolMetaAnnotation != null) {
-                    String toolMetaValue = toolMetaAnnotation.metadata();
-                    Map<String, Object> metadata = parseMetadata(toolMetaValue);
+                    String[] toolMetaValues = toolMetaAnnotation.metadata();
+                    Map<String, Object> metadata = parseMetadata(toolMetaValues);
 
                     if (!metadata.isEmpty()) {
                         if (metadataTransformer != null) {
@@ -102,17 +102,14 @@ public class ToolSpecsPostProcessor implements BeanPostProcessor {
         return method.getAnnotation(McpToolMeta.class);
     }
 
-    private Map<String, Object> parseMetadata(String metadata) {
+    private Map<String, Object> parseMetadata(String[] metadataEntries) {
         Map<String, Object> retValue = new HashMap<>();
 
-        if (StringUtils.hasText(metadata)) {
-            String[] pairs = metadata.split(",");
-            for (String pair : pairs) {
-                if (StringUtils.hasText(pair)) {
-                    String[] entry = pair.split("=");
-                    if (entry.length == 2) {
-                        retValue.put(entry[0].trim(), entry[1].trim());
-                    }
+        for (String pair : metadataEntries) {
+            if (StringUtils.hasText(pair)) {
+                String[] entry = pair.split("=");
+                if (entry.length == 2) {
+                    retValue.put(entry[0].trim(), entry[1].trim());
                 }
             }
         }
