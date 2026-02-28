@@ -8,7 +8,7 @@ import org.springframework.validation.annotation.Validated;
 @Data
 @ConfigurationProperties(prefix = "com.hazse.mcp.boardgame.bgg")
 @Validated
-public class StdioAppConfigurationProperties {
+public class AppConfigurationProperties {
     @NotBlank
     private String authenticationToken;
 }

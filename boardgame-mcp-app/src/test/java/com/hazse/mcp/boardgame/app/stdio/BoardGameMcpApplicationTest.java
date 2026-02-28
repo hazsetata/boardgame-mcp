@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class StdioBoardGameMcpApplicationTest {
+class BoardGameMcpApplicationTest {
     @Test
     void contextLoads() {
         // Checks if the application context can be loaded.

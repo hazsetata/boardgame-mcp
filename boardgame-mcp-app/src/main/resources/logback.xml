@@ -3,7 +3,7 @@
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>
         </encoder>
-        <target>System.err</target>
+        <target>System.out</target>
     </appender>
 
     <root level="info">

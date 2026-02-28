@@ -1,0 +1,8 @@
+services:
+  boardgame-mcp:
+    image: hazse/boardgame-mcp:latest
+    container_name: boardgame-mcp
+    ports:
+      - "8080:8080"
+    environment:
+      - COM_HAZSE_MCP_BOARDGAME_BGG_AUTHENTICATION_TOKEN=abcd...1234

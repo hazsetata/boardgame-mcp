@@ -43,8 +43,9 @@ RUN java -Djarmode=tools -jar boardgame-mcp-app/target/*.jar extract --layers --
 #          Could use dhi.io/eclipse-temurin:21-alpine3.23 instead, but that requires Docker account login (free)
 FROM cgr.dev/chainguard/jre:latest AS runtime
 
-# Set working directory
+# Set working directory and expose port
 WORKDIR /app
+EXPOSE 8080
 
 # Copy layers in order of least to most likely to change
 # This optimizes Docker layer caching

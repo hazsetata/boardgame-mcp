@@ -3,7 +3,7 @@ package com.hazse.mcp.boardgame.app.stdio.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hazse.mcp.boardgame.app.stdio.meta.AppsUiMetadataTransformer;
 import com.hazse.mcp.boardgame.app.stdio.meta.ToolSpecsPostProcessor;
-import com.hazse.mcp.boardgame.app.stdio.config.props.StdioAppConfigurationProperties;
+import com.hazse.mcp.boardgame.app.stdio.config.props.AppConfigurationProperties;
 import com.hazse.mcp.boardgame.app.stdio.provider.BoardGameAppsExtensionProvider;
 import com.hazse.mcp.boardgame.app.stdio.provider.BoardGamePromptProvider;
 import com.hazse.mcp.boardgame.app.stdio.provider.BoardGameResourceProvider;
@@ -16,10 +16,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties(StdioAppConfigurationProperties.class)
-public class StdioAppConfiguration {
+@EnableConfigurationProperties(AppConfigurationProperties.class)
+public class AppConfiguration {
     @Bean
-    public BoardGameInformationClient auduxBggClient(StdioAppConfigurationProperties properties) {
+    public BoardGameInformationClient auduxBggClient(AppConfigurationProperties properties) {
         return new AuduxBggClient(properties.getAuthenticationToken());
     }
 
